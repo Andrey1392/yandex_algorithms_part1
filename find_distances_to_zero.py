@@ -1,44 +1,29 @@
-# номер посылки 89718101
+# номер посылки 89721121
 
 
-def distances_to_nearest_zero(numbers):
+def distances_to_nearest_zero(numbers, zero_value='0'):
 
     street_length = len(numbers)
     distances = [0] * street_length
-
-    zeroes_indexes = [i for i in range(street_length) if numbers[i] == '0']
-    first_zero_index = zeroes_indexes[0]
-    last_zero_index = zeroes_indexes[-1]
-
-    distances[:first_zero_index] = [
-        first_zero_index - i for i in range(first_zero_index)
+    zeroes = [
+        number_index for number_index, value in enumerate(numbers) if value == zero_value
+    ]
+    first, last = zeroes[0], zeroes[-1]
+    distances[:first] = [
+        first - number_index for number_index in range(first)
+    ]
+    for left_index, right_index in zip(zeroes, zeroes[1:]):
+        for number_index in range(left_index + 1, right_index):
+            distances[number_index] = min(
+                number_index - left_index, right_index - number_index
+            )
+    distances[last + 1:] = [
+        number_index - last for number_index in range(last + 1, street_length)
     ]
 
-    for i in range(len(zeroes_indexes) - 1):
-        left_boundary_index = zeroes_indexes[i]
-        right_boundary_index = zeroes_indexes[i+1]
-        interval_length = right_boundary_index - left_boundary_index - 1
-        if interval_length > 0:
-            left_half_distances = [
-                i + 1 for i in range(interval_length // 2)
-            ]
-            center_distance = [
-                interval_length // 2 + 1 for _ in range(interval_length % 2)
-            ]
-            rigth_half_distances = left_half_distances[::-1]
-            distances[
-                left_boundary_index + 1: right_boundary_index
-            ] = left_half_distances + center_distance + rigth_half_distances
-
-    distances[last_zero_index+1:] = [
-        i + 1 for i in range(street_length - (last_zero_index + 1))
-    ]
-
-    return (distances)
+    return distances
 
 
 if __name__ == '__main__':
     input()
-    numbers = input().split()
-    result = distances_to_nearest_zero(numbers)
-    print(*result)
+    print(*distances_to_nearest_zero(numbers=input().split()))

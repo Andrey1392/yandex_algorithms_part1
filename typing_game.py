@@ -1,14 +1,20 @@
-# номер посылки 89717458
+# номер посылки 89721205
 
-def calculate_score(count_max, data):
+def calculate_score(
+        count_max,
+        data,
+        values=('1', '2', '3', '4', '5', '6', '7', '8', '9',),
+        players=2
+):
 
     return sum(
-        [1 if count_max >= data.count(str(i)) > 0 else 0 for i in range(1, 10)]
+        [count_max * players >= data.count(value) > 0 for value in values]
     )
 
 
 if __name__ == '__main__':
-    count_max = 2 * int(input())
-    data = f'{input()}{input()}{input()}{input()}'
-
-    print(calculate_score(count_max, data))
+    print(
+        calculate_score(count_max=int(input()),
+                        data=f'{input()}{input()}{input()}{input()}'
+                        )
+        )
